@@ -1,0 +1,25 @@
+const today_date = new Date().toISOString().split('T')[0];
+const data = window.wx?.cgiData || {};
+const result = [];
+
+for (const item of data.publish_list || []) {
+  const publishDate = item.view?.publishDate || '';
+  
+  for (const article of item.appmsg_info || []) {
+    result.push({
+      标题: (article.title || '').trim(),
+      链接: article.content_url || '',
+      阅读数: article.read_num || 0,
+      点赞数: article.like_num || 0,
+      在看数: article.old_like_num || 0,
+      转发数: article.share_num || 0,
+      是否原创: article.copyright_type === 1 ? '是' : '否',
+      发布日期: publishDate,
+      状态: article.is_deleted ? '已删除' : '正常'
+    });
+  }
+}
+
+console.table(result);
+copy(result);
+console.log('数据已复制到剪贴板');
